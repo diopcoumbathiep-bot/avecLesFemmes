@@ -30,10 +30,17 @@ class Groupement
     #[ORM\OneToMany(targetEntity: Campagne::class, mappedBy: 'groupement')]
     private Collection $campagnes;
 
+    /**
+     * @var Collection<int, ConditionPret>
+     */
+    #[ORM\OneToMany(targetEntity: ConditionPret::class, mappedBy: 'groupement')]
+    private Collection $conditionPrets;
+
     public function __construct()
     {
         $this->membres = new ArrayCollection();
         $this->campagnes = new ArrayCollection();
+        $this->conditionPrets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -107,6 +114,36 @@ class Groupement
             // set the owning side to null (unless already changed)
             if ($campagne->getGroupement() === $this) {
                 $campagne->setGroupement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ConditionPret>
+     */
+    public function getConditionPrets(): Collection
+    {
+        return $this->conditionPrets;
+    }
+
+    public function addConditionPret(ConditionPret $conditionPret): static
+    {
+        if (!$this->conditionPrets->contains($conditionPret)) {
+            $this->conditionPrets->add($conditionPret);
+            $conditionPret->setGroupement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConditionPret(ConditionPret $conditionPret): static
+    {
+        if ($this->conditionPrets->removeElement($conditionPret)) {
+            // set the owning side to null (unless already changed)
+            if ($conditionPret->getGroupement() === $this) {
+                $conditionPret->setGroupement(null);
             }
         }
 
