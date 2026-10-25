@@ -89,7 +89,9 @@
             "diopcoumbathiep:db:create": [
         "@php bin/console doctrine:database:drop --force --if-exists",
         "@php bin/console doctrine:database:create"
-    ]
+        
+    ],
+    "diopcoumbathiep:make:entity": "App\\Composer\\Commandes::makeEntity"
     },
     "conflict": {
         "symfony/symfony": "*"
