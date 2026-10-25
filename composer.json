@@ -84,7 +84,8 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+            "diopcoumbathiep:cache:clear": "@php bin/console cache:clear"
     },
     "conflict": {
         "symfony/symfony": "*"
