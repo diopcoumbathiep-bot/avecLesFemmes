@@ -48,9 +48,23 @@ abstract class Membre
     #[ORM\OneToMany(targetEntity: ModeCotisation::class, mappedBy: 'membre')]
     private Collection $modeCotisations;
 
+    /**
+     * @var Collection<int, Presence>
+     */
+    #[ORM\OneToMany(targetEntity: Presence::class, mappedBy: 'membre')]
+    private Collection $presences;
+
+    /**
+     * @var Collection<int, Cotisation>
+     */
+    #[ORM\OneToMany(targetEntity: Cotisation::class, mappedBy: 'membre')]
+    private Collection $cotisations;
+
     public function __construct()
     {
         $this->modeCotisations = new ArrayCollection();
+        $this->presences = new ArrayCollection();
+        $this->cotisations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -154,6 +168,66 @@ abstract class Membre
             // set the owning side to null (unless already changed)
             if ($modeCotisation->getMembre() === $this) {
                 $modeCotisation->setMembre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Presence>
+     */
+    public function getPresences(): Collection
+    {
+        return $this->presences;
+    }
+
+    public function addPresence(Presence $presence): static
+    {
+        if (!$this->presences->contains($presence)) {
+            $this->presences->add($presence);
+            $presence->setMembre($this);
+        }
+
+        return $this;
+    }
+
+    public function removePresence(Presence $presence): static
+    {
+        if ($this->presences->removeElement($presence)) {
+            // set the owning side to null (unless already changed)
+            if ($presence->getMembre() === $this) {
+                $presence->setMembre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Cotisation>
+     */
+    public function getCotisations(): Collection
+    {
+        return $this->cotisations;
+    }
+
+    public function addCotisation(Cotisation $cotisation): static
+    {
+        if (!$this->cotisations->contains($cotisation)) {
+            $this->cotisations->add($cotisation);
+            $cotisation->setMembre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCotisation(Cotisation $cotisation): static
+    {
+        if ($this->cotisations->removeElement($cotisation)) {
+            // set the owning side to null (unless already changed)
+            if ($cotisation->getMembre() === $this) {
+                $cotisation->setMembre(null);
             }
         }
 
