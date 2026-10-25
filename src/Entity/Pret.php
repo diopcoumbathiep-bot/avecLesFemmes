@@ -44,9 +44,16 @@ class Pret
     #[ORM\OneToMany(targetEntity: Remboursement::class, mappedBy: 'pret')]
     private Collection $remboursements;
 
+    /**
+     * @var Collection<int, Amende>
+     */
+    #[ORM\OneToMany(targetEntity: Amende::class, mappedBy: 'pret')]
+    private Collection $amendes;
+
     public function __construct()
     {
         $this->remboursements = new ArrayCollection();
+        $this->amendes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -161,6 +168,36 @@ class Pret
             // set the owning side to null (unless already changed)
             if ($remboursement->getPret() === $this) {
                 $remboursement->setPret(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Amende>
+     */
+    public function getAmendes(): Collection
+    {
+        return $this->amendes;
+    }
+
+    public function addAmende(Amende $amende): static
+    {
+        if (!$this->amendes->contains($amende)) {
+            $this->amendes->add($amende);
+            $amende->setPret($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAmende(Amende $amende): static
+    {
+        if ($this->amendes->removeElement($amende)) {
+            // set the owning side to null (unless already changed)
+            if ($amende->getPret() === $this) {
+                $amende->setPret(null);
             }
         }
 
