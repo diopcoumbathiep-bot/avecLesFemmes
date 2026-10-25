@@ -91,13 +91,15 @@
      "diopcoumbathiep:migration": [
         "@php bin/console make:migration --no-interaction",
         "@php bin/console doctrine:migrations:migrate --no-interaction"
-    ]
+    ],
+        "diopcoumbathiep:fixtures": "@php bin/console doctrine:fixtures:load --no-interaction"
     },
     "scripts-descriptions": {
     "diopcoumbathiep:cache:clear": "Vide le cache : a la demande, et automatiquement apres composer install et composer update",
     "diopcoumbathiep:db:create": "Supprime la base si elle existe puis la recree : a la demande uniquement",
     "diopcoumbathiep:make:entity": "Cree une entite : a la demande uniquement",
-    "diopcoumbathiep:migration": "Genere puis execute la migration : a la demande uniquement"
+    "diopcoumbathiep:migration": "Genere puis execute la migration : a la demande uniquement",
+    "diopcoumbathiep:fixtures": "Vide les tables puis charge les fausses donnees : a la demande uniquement"
     },
     "conflict": {
         "symfony/symfony": "*"
