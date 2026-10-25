@@ -6,7 +6,13 @@ use App\Repository\TypeCampagneRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: TypeCampagneRepository::class)]
-class TypeCampagne
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
+#[ORM\DiscriminatorMap([
+    'epargne' => Epargne::class,
+    'tontine' => Tontine::class,
+])]
+abstract class TypeCampagne
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
