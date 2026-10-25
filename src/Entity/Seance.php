@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SeanceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\StatutSeance;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
 class Seance
@@ -26,6 +27,8 @@ class Seance
 
     #[ORM\ManyToOne]
     private ?Membre $beneficiaire = null;
+    #[ORM\Column(enumType: StatutSeance::class)]
+    private ?StatutSeance $statutSeance = null;
 
     public function getId(): ?int
     {
@@ -76,6 +79,17 @@ class Seance
     public function setBeneficiaire(?Membre $beneficiaire): static
     {
         $this->beneficiaire = $beneficiaire;
+
+        return $this;
+    }
+        public function getStatutSeance(): ?StatutSeance
+    {
+        return $this->statutSeance;
+    }
+
+    public function setStatutSeance(StatutSeance $statutSeance): static
+    {
+        $this->statutSeance = $statutSeance;
 
         return $this;
     }
