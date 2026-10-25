@@ -79,12 +79,8 @@
             "assets:install %PUBLIC_DIR%": "symfony-cmd",
             "importmap:install": "symfony-cmd"
         },
-        "post-install-cmd": [
-            "@auto-scripts"
-        ],
-        "post-update-cmd": [
-            "@auto-scripts"
-        ],
+         "post-install-cmd": ["@auto-scripts", "@diopcoumbathiep:cache:clear"],
+         "post-update-cmd": ["@auto-scripts", "@diopcoumbathiep:cache:clear"],
             "diopcoumbathiep:cache:clear": "@php bin/console cache:clear",
             "diopcoumbathiep:db:create": [
         "@php bin/console doctrine:database:drop --force --if-exists",
