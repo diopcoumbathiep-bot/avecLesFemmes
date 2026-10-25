@@ -85,7 +85,11 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-            "diopcoumbathiep:cache:clear": "@php bin/console cache:clear"
+            "diopcoumbathiep:cache:clear": "@php bin/console cache:clear",
+            "diopcoumbathiep:db:create": [
+        "@php bin/console doctrine:database:drop --force --if-exists",
+        "@php bin/console doctrine:database:create"
+    ]
     },
     "conflict": {
         "symfony/symfony": "*"
