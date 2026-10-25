@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PretRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use App\Enum\StatutPret;
 
@@ -35,6 +37,17 @@ class Pret
     private ?ConditionPret $conditionPret = null;
     #[ORM\Column(enumType: StatutPret::class)]
     private ?StatutPret $statutPret = null;
+
+    /**
+     * @var Collection<int, Remboursement>
+     */
+    #[ORM\OneToMany(targetEntity: Remboursement::class, mappedBy: 'pret')]
+    private Collection $remboursements;
+
+    public function __construct()
+    {
+        $this->remboursements = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -120,6 +133,36 @@ class Pret
     public function setStatutPret(StatutPret $statutPret): static
     {
         $this->statutPret = $statutPret;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Remboursement>
+     */
+    public function getRemboursements(): Collection
+    {
+        return $this->remboursements;
+    }
+
+    public function addRemboursement(Remboursement $remboursement): static
+    {
+        if (!$this->remboursements->contains($remboursement)) {
+            $this->remboursements->add($remboursement);
+            $remboursement->setPret($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRemboursement(Remboursement $remboursement): static
+    {
+        if ($this->remboursements->removeElement($remboursement)) {
+            // set the owning side to null (unless already changed)
+            if ($remboursement->getPret() === $this) {
+                $remboursement->setPret(null);
+            }
+        }
 
         return $this;
     }
