@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PretRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Enum\StatutPret;
 
 #[ORM\Entity(repositoryClass: PretRepository::class)]
 class Pret
@@ -32,6 +33,8 @@ class Pret
     #[ORM\ManyToOne(inversedBy: 'prets')]
     #[ORM\JoinColumn(nullable: false)]
     private ?ConditionPret $conditionPret = null;
+    #[ORM\Column(enumType: StatutPret::class)]
+    private ?StatutPret $statutPret = null;
 
     public function getId(): ?int
     {
@@ -106,6 +109,17 @@ class Pret
     public function setConditionPret(?ConditionPret $conditionPret): static
     {
         $this->conditionPret = $conditionPret;
+
+        return $this;
+    }
+        public function getStatutPret(): ?StatutPret
+    {
+        return $this->statutPret;
+    }
+
+    public function setStatutPret(StatutPret $statutPret): static
+    {
+        $this->statutPret = $statutPret;
 
         return $this;
     }
