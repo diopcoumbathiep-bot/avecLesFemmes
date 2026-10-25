@@ -6,7 +6,15 @@ use App\Repository\MembreRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MembreRepository::class)]
-class Membre
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
+#[ORM\DiscriminatorMap([
+    'admin' => Admin::class,
+    'secretaire' => Secretaire::class,
+    'tresoriere' => Tresoriere::class,
+    'membre_simple' => MembreSimple::class,
+])]
+abstract class Membre
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
