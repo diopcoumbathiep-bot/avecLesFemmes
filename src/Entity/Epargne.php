@@ -25,7 +25,7 @@ class Epargne extends TypeCampagne
         return $this;
     }
 
-    public function isIsCalebasse(): ?bool
+    public function isCalebasse(): ?bool
     {
         return $this->isCalebasse;
     }
