@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+{% import '_macros.html.twig' as m %}
+
+{% set seance = detail.seance %}
+{% set campagne = detail.campagne %}
+
+{% block title %}Séance du {{ seance.date }}{% endblock %}
+
+{% block fil_ariane %}
+    <div class="fil-ariane">
+        <a href="{{ path('app_groupement_index') }}">Groupements</a><span>›</span>
+        <a href="{{ path('app_groupement_show', {id: campagne.groupementId}) }}">{{ campagne.groupementNom }}</a><span>›</span>
+        <a href="{{ path('app_campagne_show', {id: campagne.id}) }}">{{ campagne.nom }}</a><span>›</span>
+        Séance
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="titre-page">
+        <h1>Séance du {{ seance.date }}</h1>
+        <span class="badge {{ seance.terminee ? 'badge--vert' : 'badge--orange' }}">{{ seance.statut }}</span>
+    </div>
+    {% if seance.beneficiaire %}
+        <p>Bénéficiaire de la tontine : <strong>{{ seance.beneficiaire }}</strong></p>
+    {% endif %}
+
+    <div class="chiffres">
+        <div class="chiffre"><div class="chiffre__libelle">Présentes</div><div class="chiffre__valeur">{{ seance.nombrePresents }} / {{ detail.lignes|length }}</div></div>
+        <div class="chiffre chiffre--accent"><div class="chiffre__libelle">Épargne collectée</div><div class="chiffre__valeur">{{ m.fcfa(seance.totalEpargne) }}</div></div>
+        <div class="chiffre"><div class="chiffre__libelle">Cotisations de caisse</div><div class="chiffre__valeur">{{ m.fcfa(seance.totalCaisse) }}</div></div>
+        <div class="chiffre"><div class="chiffre__libelle">Amendes</div><div class="chiffre__valeur">{{ m.fcfa(seance.totalAmendes) }}</div></div>
+        <div class="chiffre chiffre--accent"><div class="chiffre__libelle">Caisse sociale</div><div class="chiffre__valeur">{{ m.fcfa(seance.totalCaisseSociale) }}</div></div>
+        <div class="chiffre"><div class="chiffre__libelle">Total encaissé</div><div class="chiffre__valeur">{{ m.fcfa(seance.totalEncaisse) }}</div></div>
+    </div>
+
+    <h2>Cotisations</h2>
+    <div class="tableau-conteneur">
+        <table>
+            <thead>
+                <tr><th>Membre</th><th>Rôle</th><th>Présence</th><th class="nombre">Épargne</th><th class="nombre">Caisse</th></tr>
+            </thead>
+            <tbody>
+                {% for ligne in detail.lignes %}
+                    {% set couleur = {present: 'badge--vert', absent_represente: 'badge--orange', absent: 'badge--rouge'}[ligne.presenceCode] %}
+                    <tr>
+                        <td><strong>{{ ligne.nomComplet }}</strong></td>
+                        <td>{{ ligne.role }}</td>
+                        <td><span class="badge {{ couleur }}">{{ ligne.presence }}</span></td>
+                        <td class="nombre">{{ m.fcfa(ligne.montantEpargne) }}</td>
+                        <td class="nombre">{{ m.fcfa(ligne.montantCaisse) }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="vide">Aucune présence enregistrée pour cette séance.</td></tr>
+                {% endfor %}
+            </tbody>
+            {% if detail.lignes is not empty %}
+                <tfoot>
+                    <tr><td colspan="3">Total</td><td class="nombre">{{ m.fcfa(seance.totalEpargne) }}</td><td class="nombre">{{ m.fcfa(seance.totalCaisse) }}</td></tr>
+                </tfoot>
+            {% endif %}
+        </table>
+    </div>
+
+    <h2>Amendes</h2>
+    <div class="tableau-conteneur">
+        <table>
+            <thead>
+                <tr><th>Membre</th><th>Motif</th><th class="nombre">Jours</th><th>Appliquée le</th><th class="nombre">Montant</th></tr>
+            </thead>
+            <tbody>
+                {% for amende in detail.amendes %}
+                    <tr>
+                        <td><strong>{{ amende.membre }}</strong></td>
+                        <td>{{ amende.motif }}</td>
+                        <td class="nombre">{{ amende.nombreJours ?? '—' }}</td>
+                        <td>{{ amende.dateApplication }}</td>
+                        <td class="nombre">{{ m.fcfa(amende.montant) }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="vide">Aucune amende pour cette séance.</td></tr>
+                {% endfor %}
+            </tbody>
+            {% if detail.amendes is not empty %}
+                <tfoot>
+                    <tr><td colspan="4">Total des amendes</td><td class="nombre">{{ m.fcfa(seance.totalAmendes) }}</td></tr>
+                </tfoot>
+            {% endif %}
+        </table>
+    </div>
+{% endblock %}
