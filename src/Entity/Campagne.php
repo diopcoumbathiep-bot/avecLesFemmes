@@ -6,11 +6,15 @@ use App\Repository\CampagneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CampagneRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Campagne
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -31,11 +35,7 @@ class Campagne
     #[ORM\Column(length: 50)]
     private ?string $frequence = null;
 
-    #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTime $updateAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'campagnes')]
     #[ORM\JoinColumn(nullable: false)]
@@ -124,30 +124,6 @@ class Campagne
     public function setFrequence(string $frequence): static
     {
         $this->frequence = $frequence;
-
-        return $this;
-    }
-
-    public function getCreateAt(): ?\DateTimeImmutable
-    {
-        return $this->createAt;
-    }
-
-    public function setCreateAt(\DateTimeImmutable $createAt): static
-    {
-        $this->createAt = $createAt;
-
-        return $this;
-    }
-
-    public function getUpdateAt(): ?\DateTime
-    {
-        return $this->updateAt;
-    }
-
-    public function setUpdateAt(?\DateTime $updateAt): static
-    {
-        $this->updateAt = $updateAt;
 
         return $this;
     }
