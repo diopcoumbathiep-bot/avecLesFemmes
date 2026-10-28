@@ -10,6 +10,9 @@ class Epargne extends TypeCampagne
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $objectif = null;
 
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $isCalebasse = false;
+
     public function getObjectif(): ?int
     {
         return $this->objectif;
@@ -18,6 +21,18 @@ class Epargne extends TypeCampagne
     public function setObjectif(?int $objectif): static
     {
         $this->objectif = $objectif;
+
+        return $this;
+    }
+
+    public function isIsCalebasse(): ?bool
+    {
+        return $this->isCalebasse;
+    }
+
+    public function setIsCalebasse(?bool $isCalebasse): static
+    {
+        $this->isCalebasse = $isCalebasse;
 
         return $this;
     }
