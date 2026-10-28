@@ -4,8 +4,9 @@ namespace App\DataFixtures;
 
 use App\Entity\Campagne;
 use App\Entity\Epargne;
-use App\Entity\Groupement;
+use App\Entity\Exercice;
 use App\Entity\Tontine;
+use App\Enum\Periodicite;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -19,29 +20,36 @@ class CampagneFixtures extends Fixture implements DependentFixtureInterface
         $numero = 0;
 
         for ($g = 0; $g < 2; $g++) {
-            $groupement = $this->getReference('groupement_' . $g, Groupement::class);
+            $exercice = $this->getReference('exercice_' . $g, Exercice::class);
 
             foreach (['Epargne', 'Tontine'] as $genre) {
                 if ($genre === 'Epargne') {
-                    $type = new Epargne();
-                    $type->setObjectif($faker->numberBetween(500000, 2000000));
+                    // l'epargne calebasse dure tout l'exercice
+                    $type = (new Epargne())
+                        ->setObjectif($faker->numberBetween(500000, 2000000))
+                        ->setIsCalebasse(true);
+                    $nom = 'Épargne calebasse';
+                    $fin = clone $exercice->getFinAt();
                 } else {
                     $type = new Tontine();
+                    $nom = 'Tontine';
+                    $fin = new \DateTime('2027-01-31');
                 }
                 $type->setNomType($genre);
                 $manager->persist($type);
 
-                $debut = $faker->dateTimeBetween('-6 months', '-2 months');
-
-                $campagne = new Campagne();
-                $campagne->setNomCampagne('Campagne ' . $genre . ' ' . ($g + 1));
-                $campagne->setDateDebutCampagne($debut);
-                $campagne->setDateFinCampagne((clone $debut)->modify('+8 months'));
-                $campagne->setMontantCampagne($faker->randomElement([5000, 10000, 20000]));
-                $campagne->setFrequence($faker->randomElement(['hebdomadaire', 'mensuelle']));
-                $campagne->setCreateAt(new \DateTimeImmutable());
-                $campagne->setTypeCampagne($type);
-                $campagne->setGroupement($groupement);
+                $campagne = (new Campagne())
+                    ->setNomCampagne($nom . ' ' . ($g + 1))
+                    ->setDateDebutCampagne(new \DateTime('2026-09-27'))
+                    ->setDateFinCampagne($fin)
+                    ->setMontantCampagne($faker->randomElement([1000, 2000, 5000]))
+                    ->setPeriodicite(Periodicite::PAR_QUINZAINE)
+                    ->setJourRencontre('Dimanche')
+                    ->setMontantCaissePresent(100)
+                    ->setMontantCaisseAbsent(300)
+                    ->setMontantAmendeJournaliere(350)
+                    ->setTypeCampagne($type)
+                    ->setExercice($exercice);
                 $manager->persist($campagne);
 
                 $this->addReference('campagne_' . $numero, $campagne);
@@ -54,6 +62,6 @@ class CampagneFixtures extends Fixture implements DependentFixtureInterface
 
     public function getDependencies(): array
     {
-        return [GroupementFixtures::class];
+        return [ExerciceFixtures::class];
     }
 }
