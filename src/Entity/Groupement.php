@@ -5,11 +5,15 @@ namespace App\Entity;
 use App\Repository\GroupementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GroupementRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Groupement
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
