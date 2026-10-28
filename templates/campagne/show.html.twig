@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+{% import '_macros.html.twig' as m %}
+
+{% set campagne = detail.campagne %}
+
+{% block title %}{{ campagne.nom }}{% endblock %}
+
+{% block fil_ariane %}
+    <div class="fil-ariane">
+        <a href="{{ path('app_groupement_index') }}">Groupements</a><span>›</span>
+        <a href="{{ path('app_groupement_show', {id: campagne.groupementId}) }}">{{ campagne.groupementNom }}</a><span>›</span>
+        {{ campagne.nom }}
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="titre-page">
+        <h1>{{ campagne.nom }}</h1>
+        <span class="badge {{ campagne.type == 'Tontine' ? 'badge--orange' : 'badge--vert' }}">{{ campagne.type }}</span>
+    </div>
+
+    <dl class="fiche">
+        <div><dt>Période</dt><dd>{{ campagne.debut }} → {{ campagne.fin }}</dd></div>
+        <div><dt>Rencontre</dt><dd>{{ campagne.periodicite }} · {{ campagne.jourRencontre }}</dd></div>
+        <div><dt>Montant fixe</dt><dd>{{ m.fcfa(campagne.montant) }}</dd></div>
+        <div><dt>Caisse (présente)</dt><dd>{{ m.fcfa(campagne.montantCaissePresent) }}</dd></div>
+        <div><dt>Caisse (absente représentée)</dt><dd>{{ m.fcfa(campagne.montantCaisseAbsent) }}</dd></div>
+        <div><dt>Amende journalière</dt><dd>{{ m.fcfa(campagne.montantAmendeJournaliere) }}</dd></div>
+    </dl>
+
+    <h2>Bilan</h2>
+    <div class="chiffres">
+        <div class="chiffre"><div class="chiffre__libelle">Membres</div><div class="chiffre__valeur">{{ detail.membres|length }}</div></div>
+        <div class="chiffre"><div class="chiffre__libelle">Séances</div><div class="chiffre__valeur">{{ detail.seances|length }}</div></div>
+        <div class="chiffre chiffre--accent"><div class="chiffre__libelle">Épargne collectée</div><div class="chiffre__valeur">{{ m.fcfa(detail.totalEpargne) }}</div></div>
+        <div class="chiffre chiffre--accent"><div class="chiffre__libelle">Caisse sociale</div><div class="chiffre__valeur">{{ m.fcfa(detail.totalCaisseSociale) }}</div></div>
+    </div>
+
+    <h2>Séances</h2>
+    <div class="tableau-conteneur">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    {% if campagne.type == 'Tontine' %}<th>Bénéficiaire</th>{% endif %}
+                    <th class="nombre">Présentes</th>
+                    <th class="nombre">Épargne</th>
+                    <th class="nombre">Caisse</th>
+                    <th class="nombre">Amendes</th>
+                    <th class="nombre">Caisse sociale</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for seance in detail.seances %}
+                    <tr>
+                        <td><a href="{{ path('app_seance_show', {id: seance.id}) }}">{{ seance.date }}</a></td>
+                        <td><span class="badge {{ seance.terminee ? 'badge--vert' : 'badge--orange' }}">{{ seance.statut }}</span></td>
+                        {% if campagne.type == 'Tontine' %}<td>{{ seance.beneficiaire ?? '—' }}</td>{% endif %}
+                        <td class="nombre">{{ seance.nombrePresents }}</td>
+                        <td class="nombre">{{ m.fcfa(seance.totalEpargne) }}</td>
+                        <td class="nombre">{{ m.fcfa(seance.totalCaisse) }}</td>
+                        <td class="nombre">{{ m.fcfa(seance.totalAmendes) }}</td>
+                        <td class="nombre"><strong>{{ m.fcfa(seance.totalCaisseSociale) }}</strong></td>
+                        <td><a class="bouton" href="{{ path('app_seance_show', {id: seance.id}) }}">Détail</a></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="9" class="vide">Aucune séance.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Membres de la campagne</h2>
+    <div class="tableau-conteneur">
+        <table>
+            <thead>
+                <tr><th>Nom complet</th><th>Téléphone</th><th>Rôle</th><th>Mode de cotisation</th><th class="nombre">Montant par séance</th></tr>
+            </thead>
+            <tbody>
+                {% for membre in detail.membres %}
+                    <tr>
+                        <td><strong>{{ membre.nomComplet }}</strong></td>
+                        <td>{{ membre.tel }}</td>
+                        <td>{{ membre.role }}</td>
+                        <td><span class="badge {{ membre.libre ? 'badge--orange' : '' }}">{{ membre.libre ? 'Libre' : 'Fixe' }}</span></td>
+                        <td class="nombre">{{ membre.libre ? 'Saisi à chaque séance' : m.fcfa(membre.montantAttendu) }}</td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="vide">Aucun membre inscrit.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
