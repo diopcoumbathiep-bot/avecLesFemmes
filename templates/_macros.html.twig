@@ -1,0 +1,2 @@
+{# Affiche un montant en FCFA, ex. 12 500 FCFA #}
+{% macro fcfa(montant) %}{{ montant is null ? '—' : montant|number_format(0, ',', ' ') ~ ' FCFA' }}{% endmacro %}
