@@ -3,11 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\PresenceRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PresenceRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Presence
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
