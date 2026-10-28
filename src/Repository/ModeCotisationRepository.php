@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ModeCotisation;
+use App\Entity\Campagne;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,42 @@ class ModeCotisationRepository extends ServiceEntityRepository
         parent::__construct($registry, ModeCotisation::class);
     }
 
-//    /**
-//     * @return ModeCotisation[] Returns an array of ModeCotisation objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return ModeCotisation[]
+     */
+    public function findParCampagne(Campagne $campagne): array
+    {
+        return $this->createQueryBuilder('mc')
+            ->addSelect('m')
+            ->join('mc.membre', 'm')
+            ->where('mc.campagne = :campagne')
+            ->setParameter('campagne', $campagne)
+            ->orderBy('m.nomComplet', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?ModeCotisation
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Nombre de membres inscrits par campagne.
+     *
+     * @param int[] $campagneIds
+     *
+     * @return array<int, int>
+     */
+    public function compterParCampagne(array $campagneIds): array
+    {
+        if ($campagneIds === []) {
+            return [];
+        }
+
+        $lignes = $this->createQueryBuilder('mc')
+            ->select('IDENTITY(mc.campagne) AS campagneId, COUNT(mc.id) AS total')
+            ->where('mc.campagne IN (:ids)')
+            ->setParameter('ids', $campagneIds)
+            ->groupBy('mc.campagne')
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_column(array_map(fn ($l) => [(int) $l['campagneId'], (int) $l['total']], $lignes), 1, 0);
+    }
 }
