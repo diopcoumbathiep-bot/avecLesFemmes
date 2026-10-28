@@ -39,12 +39,6 @@ class Groupement
     private Collection $membres;
 
     /**
-     * @var Collection<int, Campagne>
-     */
-    #[ORM\OneToMany(targetEntity: Campagne::class, mappedBy: 'groupement')]
-    private Collection $campagnes;
-
-    /**
      * @var Collection<int, Exercice>
      */
     #[ORM\OneToMany(targetEntity: Exercice::class, mappedBy: 'groupement', orphanRemoval: true)]
@@ -60,7 +54,6 @@ class Groupement
     public function __construct()
     {
         $this->membres = new ArrayCollection();
-        $this->campagnes = new ArrayCollection();
         $this->conditionPrets = new ArrayCollection();
         $this->exercices = new ArrayCollection();
     }
@@ -142,36 +135,6 @@ class Groupement
             // set the owning side to null (unless already changed)
             if ($membre->getGroupement() === $this) {
                 $membre->setGroupement(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Campagne>
-     */
-    public function getCampagnes(): Collection
-    {
-        return $this->campagnes;
-    }
-
-    public function addCampagne(Campagne $campagne): static
-    {
-        if (!$this->campagnes->contains($campagne)) {
-            $this->campagnes->add($campagne);
-            $campagne->setGroupement($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCampagne(Campagne $campagne): static
-    {
-        if ($this->campagnes->removeElement($campagne)) {
-            // set the owning side to null (unless already changed)
-            if ($campagne->getGroupement() === $this) {
-                $campagne->setGroupement(null);
             }
         }
 
