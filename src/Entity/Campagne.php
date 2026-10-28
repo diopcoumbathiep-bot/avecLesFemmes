@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\Periodicite;
 use App\Repository\CampagneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -32,10 +33,20 @@ class Campagne
     #[ORM\Column]
     private ?int $montantCampagne = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $frequence = null;
+    #[ORM\Column(enumType: Periodicite::class)]
+    private ?Periodicite $periodicite = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $jourRencontre = null;
 
+    #[ORM\Column]
+    private ?int $montantCaissePresent = null;
+
+    #[ORM\Column]
+    private ?int $montantCaisseAbsent = null;
+
+    #[ORM\Column]
+    private ?int $montantAmendeJournaliere = null;
 
     #[ORM\ManyToOne(inversedBy: 'campagnes')]
     #[ORM\JoinColumn(nullable: false)]
@@ -116,14 +127,62 @@ class Campagne
         return $this;
     }
 
-    public function getFrequence(): ?string
+    public function getPeriodicite(): ?Periodicite
     {
-        return $this->frequence;
+        return $this->periodicite;
     }
 
-    public function setFrequence(string $frequence): static
+    public function setPeriodicite(Periodicite $periodicite): static
     {
-        $this->frequence = $frequence;
+        $this->periodicite = $periodicite;
+
+        return $this;
+    }
+
+    public function getJourRencontre(): ?string
+    {
+        return $this->jourRencontre;
+    }
+
+    public function setJourRencontre(string $jourRencontre): static
+    {
+        $this->jourRencontre = $jourRencontre;
+
+        return $this;
+    }
+
+    public function getMontantCaissePresent(): ?int
+    {
+        return $this->montantCaissePresent;
+    }
+
+    public function setMontantCaissePresent(int $montantCaissePresent): static
+    {
+        $this->montantCaissePresent = $montantCaissePresent;
+
+        return $this;
+    }
+
+    public function getMontantCaisseAbsent(): ?int
+    {
+        return $this->montantCaisseAbsent;
+    }
+
+    public function setMontantCaisseAbsent(int $montantCaisseAbsent): static
+    {
+        $this->montantCaisseAbsent = $montantCaisseAbsent;
+
+        return $this;
+    }
+
+    public function getMontantAmendeJournaliere(): ?int
+    {
+        return $this->montantAmendeJournaliere;
+    }
+
+    public function setMontantAmendeJournaliere(int $montantAmendeJournaliere): static
+    {
+        $this->montantAmendeJournaliere = $montantAmendeJournaliere;
 
         return $this;
     }
