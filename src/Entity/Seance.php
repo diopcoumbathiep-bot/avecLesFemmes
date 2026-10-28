@@ -6,12 +6,16 @@ use App\Repository\SeanceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 use App\Enum\StatutSeance;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Seance
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
