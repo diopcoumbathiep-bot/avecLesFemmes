@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\StatutGroupement;
 use App\Repository\GroupementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,6 +22,15 @@ class Groupement
 
     #[ORM\Column(length: 100)]
     private ?string $nomGroupement = null;
+
+    #[ORM\Column(length: 20)]
+    private ?string $tel = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $adresse = null;
+
+    #[ORM\Column(enumType: StatutGroupement::class)]
+    private ?StatutGroupement $statut = StatutGroupement::ACTIF;
 
     /**
      * @var Collection<int, Membre>
@@ -68,6 +78,42 @@ class Groupement
     public function setNomGroupement(string $nomGroupement): static
     {
         $this->nomGroupement = $nomGroupement;
+
+        return $this;
+    }
+
+    public function getTel(): ?string
+    {
+        return $this->tel;
+    }
+
+    public function setTel(string $tel): static
+    {
+        $this->tel = $tel;
+
+        return $this;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?string $adresse): static
+    {
+        $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    public function getStatut(): ?StatutGroupement
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(StatutGroupement $statut): static
+    {
+        $this->statut = $statut;
 
         return $this;
     }
