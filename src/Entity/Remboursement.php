@@ -3,11 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\RemboursementRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RemboursementRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Remboursement
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
