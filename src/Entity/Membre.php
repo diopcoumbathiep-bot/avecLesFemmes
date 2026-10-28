@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MembreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MembreRepository::class)]
@@ -16,8 +17,11 @@ use Doctrine\ORM\Mapping as ORM;
     'tresoriere' => Tresoriere::class,
     'membre_simple' => MembreSimple::class,
 ])]
+#[ORM\HasLifecycleCallbacks]
 abstract class Membre
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -66,8 +70,15 @@ abstract class Membre
     #[ORM\OneToMany(targetEntity: Pret::class, mappedBy: 'membre')]
     private Collection $prets;
 
+    /**
+     * @var Collection<int, Amende>
+     */
+    #[ORM\OneToMany(targetEntity: Amende::class, mappedBy: 'membre')]
+    private Collection $amendes;
+
     public function __construct()
     {
+        $this->amendes = new ArrayCollection();
         $this->modeCotisations = new ArrayCollection();
         $this->presences = new ArrayCollection();
         $this->cotisations = new ArrayCollection();
@@ -265,6 +276,35 @@ abstract class Membre
             // set the owning side to null (unless already changed)
             if ($pret->getMembre() === $this) {
                 $pret->setMembre(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Amende>
+     */
+    public function getAmendes(): Collection
+    {
+        return $this->amendes;
+    }
+
+    public function addAmende(Amende $amende): static
+    {
+        if (!$this->amendes->contains($amende)) {
+            $this->amendes->add($amende);
+            $amende->setMembre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAmende(Amende $amende): static
+    {
+        if ($this->amendes->removeElement($amende)) {
+            if ($amende->getMembre() === $this) {
+                $amende->setMembre(null);
             }
         }
 

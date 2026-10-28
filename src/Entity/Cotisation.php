@@ -3,11 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\CotisationRepository;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CotisationRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Cotisation
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -26,6 +30,9 @@ class Cotisation
     #[ORM\ManyToOne(inversedBy: 'cotisations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Membre $membre = null;
+
+    #[ORM\Column]
+    private ?int $montantCaisse = 0;
 
     public function getId(): ?int
     {
@@ -76,6 +83,18 @@ class Cotisation
     public function setMembre(?Membre $membre): static
     {
         $this->membre = $membre;
+
+        return $this;
+    }
+
+    public function getMontantCaisse(): ?int
+    {
+        return $this->montantCaisse;
+    }
+
+    public function setMontantCaisse(int $montantCaisse): static
+    {
+        $this->montantCaisse = $montantCaisse;
 
         return $this;
     }

@@ -5,11 +5,15 @@ namespace App\Entity;
 use App\Repository\ConditionPretRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ConditionPretRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class ConditionPret
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

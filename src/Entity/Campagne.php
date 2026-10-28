@@ -2,15 +2,20 @@
 
 namespace App\Entity;
 
+use App\Enum\Periodicite;
 use App\Repository\CampagneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CampagneRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Campagne
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -28,14 +33,20 @@ class Campagne
     #[ORM\Column]
     private ?int $montantCampagne = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $frequence = null;
+    #[ORM\Column(enumType: Periodicite::class)]
+    private ?Periodicite $periodicite = null;
+
+    #[ORM\Column(length: 20)]
+    private ?string $jourRencontre = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createAt = null;
+    private ?int $montantCaissePresent = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTime $updateAt = null;
+    #[ORM\Column]
+    private ?int $montantCaisseAbsent = null;
+
+    #[ORM\Column]
+    private ?int $montantAmendeJournaliere = null;
 
     #[ORM\ManyToOne(inversedBy: 'campagnes')]
     #[ORM\JoinColumn(nullable: false)]
@@ -43,7 +54,7 @@ class Campagne
 
     #[ORM\ManyToOne(inversedBy: 'campagnes')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Groupement $groupement = null;
+    private ?Exercice $exercice = null;
 
     /**
      * @var Collection<int, ModeCotisation>
@@ -116,38 +127,62 @@ class Campagne
         return $this;
     }
 
-    public function getFrequence(): ?string
+    public function getPeriodicite(): ?Periodicite
     {
-        return $this->frequence;
+        return $this->periodicite;
     }
 
-    public function setFrequence(string $frequence): static
+    public function setPeriodicite(Periodicite $periodicite): static
     {
-        $this->frequence = $frequence;
+        $this->periodicite = $periodicite;
 
         return $this;
     }
 
-    public function getCreateAt(): ?\DateTimeImmutable
+    public function getJourRencontre(): ?string
     {
-        return $this->createAt;
+        return $this->jourRencontre;
     }
 
-    public function setCreateAt(\DateTimeImmutable $createAt): static
+    public function setJourRencontre(string $jourRencontre): static
     {
-        $this->createAt = $createAt;
+        $this->jourRencontre = $jourRencontre;
 
         return $this;
     }
 
-    public function getUpdateAt(): ?\DateTime
+    public function getMontantCaissePresent(): ?int
     {
-        return $this->updateAt;
+        return $this->montantCaissePresent;
     }
 
-    public function setUpdateAt(?\DateTime $updateAt): static
+    public function setMontantCaissePresent(int $montantCaissePresent): static
     {
-        $this->updateAt = $updateAt;
+        $this->montantCaissePresent = $montantCaissePresent;
+
+        return $this;
+    }
+
+    public function getMontantCaisseAbsent(): ?int
+    {
+        return $this->montantCaisseAbsent;
+    }
+
+    public function setMontantCaisseAbsent(int $montantCaisseAbsent): static
+    {
+        $this->montantCaisseAbsent = $montantCaisseAbsent;
+
+        return $this;
+    }
+
+    public function getMontantAmendeJournaliere(): ?int
+    {
+        return $this->montantAmendeJournaliere;
+    }
+
+    public function setMontantAmendeJournaliere(int $montantAmendeJournaliere): static
+    {
+        $this->montantAmendeJournaliere = $montantAmendeJournaliere;
 
         return $this;
     }
@@ -164,14 +199,14 @@ class Campagne
         return $this;
     }
 
-    public function getGroupement(): ?Groupement
+    public function getExercice(): ?Exercice
     {
-        return $this->groupement;
+        return $this->exercice;
     }
 
-    public function setGroupement(?Groupement $groupement): static
+    public function setExercice(?Exercice $exercice): static
     {
-        $this->groupement = $groupement;
+        $this->exercice = $exercice;
 
         return $this;
     }

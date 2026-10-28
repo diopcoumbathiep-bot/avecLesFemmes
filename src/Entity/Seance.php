@@ -6,12 +6,16 @@ use App\Repository\SeanceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 use App\Enum\StatutSeance;
 
 #[ORM\Entity(repositoryClass: SeanceRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Seance
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -44,8 +48,15 @@ class Seance
     #[ORM\OneToMany(targetEntity: Cotisation::class, mappedBy: 'seance')]
     private Collection $cotisations;
 
+    /**
+     * @var Collection<int, Amende>
+     */
+    #[ORM\OneToMany(targetEntity: Amende::class, mappedBy: 'seance')]
+    private Collection $amendes;
+
     public function __construct()
     {
+        $this->amendes = new ArrayCollection();
         $this->presences = new ArrayCollection();
         $this->cotisations = new ArrayCollection();
     }
@@ -168,6 +179,35 @@ class Seance
             // set the owning side to null (unless already changed)
             if ($cotisation->getSeance() === $this) {
                 $cotisation->setSeance(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Amende>
+     */
+    public function getAmendes(): Collection
+    {
+        return $this->amendes;
+    }
+
+    public function addAmende(Amende $amende): static
+    {
+        if (!$this->amendes->contains($amende)) {
+            $this->amendes->add($amende);
+            $amende->setSeance($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAmende(Amende $amende): static
+    {
+        if ($this->amendes->removeElement($amende)) {
+            if ($amende->getSeance() === $this) {
+                $amende->setSeance(null);
             }
         }
 
