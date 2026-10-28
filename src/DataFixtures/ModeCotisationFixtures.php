@@ -27,6 +27,8 @@ class ModeCotisationFixtures extends Fixture implements DependentFixtureInterfac
                 $mode->setCampagne($campagne);
                 $mode->setMembre($this->membre($g, $i));
                 $manager->persist($mode);
+
+                $this->addReference('mode_' . $n . '_' . $i, $mode);
             }
         }
 
