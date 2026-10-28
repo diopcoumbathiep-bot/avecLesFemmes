@@ -35,6 +35,13 @@ class Groupement
     private Collection $campagnes;
 
     /**
+     * @var Collection<int, Exercice>
+     */
+    #[ORM\OneToMany(targetEntity: Exercice::class, mappedBy: 'groupement', orphanRemoval: true)]
+    #[ORM\OrderBy(['debutAt' => 'DESC'])]
+    private Collection $exercices;
+
+    /**
      * @var Collection<int, ConditionPret>
      */
     #[ORM\OneToMany(targetEntity: ConditionPret::class, mappedBy: 'groupement')]
@@ -45,6 +52,7 @@ class Groupement
         $this->membres = new ArrayCollection();
         $this->campagnes = new ArrayCollection();
         $this->conditionPrets = new ArrayCollection();
+        $this->exercices = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,6 +156,35 @@ class Groupement
             // set the owning side to null (unless already changed)
             if ($conditionPret->getGroupement() === $this) {
                 $conditionPret->setGroupement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Exercice>
+     */
+    public function getExercices(): Collection
+    {
+        return $this->exercices;
+    }
+
+    public function addExercice(Exercice $exercice): static
+    {
+        if (!$this->exercices->contains($exercice)) {
+            $this->exercices->add($exercice);
+            $exercice->setGroupement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExercice(Exercice $exercice): static
+    {
+        if ($this->exercices->removeElement($exercice)) {
+            if ($exercice->getGroupement() === $this) {
+                $exercice->setGroupement(null);
             }
         }
 
