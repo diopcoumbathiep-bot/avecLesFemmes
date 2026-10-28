@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\StatutPresence;
 use App\Repository\PresenceRepository;
 use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,8 +18,8 @@ class Presence
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?bool $estPresent = null;
+    #[ORM\Column(enumType: StatutPresence::class)]
+    private ?StatutPresence $statut = null;
 
     #[ORM\ManyToOne(inversedBy: 'presences')]
     #[ORM\JoinColumn(nullable: false)]
@@ -33,14 +34,14 @@ class Presence
         return $this->id;
     }
 
-    public function isEstPresent(): ?bool
+    public function getStatut(): ?StatutPresence
     {
-        return $this->estPresent;
+        return $this->statut;
     }
 
-    public function setEstPresent(bool $estPresent): static
+    public function setStatut(StatutPresence $statut): static
     {
-        $this->estPresent = $estPresent;
+        $this->statut = $statut;
 
         return $this;
     }
