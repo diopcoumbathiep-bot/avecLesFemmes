@@ -31,6 +31,9 @@ class Cotisation
     #[ORM\JoinColumn(nullable: false)]
     private ?Membre $membre = null;
 
+    #[ORM\Column]
+    private ?int $montantCaisse = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -80,6 +83,18 @@ class Cotisation
     public function setMembre(?Membre $membre): static
     {
         $this->membre = $membre;
+
+        return $this;
+    }
+
+    public function getMontantCaisse(): ?int
+    {
+        return $this->montantCaisse;
+    }
+
+    public function setMontantCaisse(int $montantCaisse): static
+    {
+        $this->montantCaisse = $montantCaisse;
 
         return $this;
     }
