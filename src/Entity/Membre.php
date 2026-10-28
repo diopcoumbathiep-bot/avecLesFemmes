@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MembreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MembreRepository::class)]
@@ -16,8 +17,11 @@ use Doctrine\ORM\Mapping as ORM;
     'tresoriere' => Tresoriere::class,
     'membre_simple' => MembreSimple::class,
 ])]
+#[ORM\HasLifecycleCallbacks]
 abstract class Membre
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
