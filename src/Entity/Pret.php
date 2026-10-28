@@ -5,12 +5,16 @@ namespace App\Entity;
 use App\Repository\PretRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Trait\DateTimeTrait;
 use Doctrine\ORM\Mapping as ORM;
 use App\Enum\StatutPret;
 
 #[ORM\Entity(repositoryClass: PretRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Pret
 {
+    use DateTimeTrait;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
