@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Membre;
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,19 @@ class MembreRepository extends ServiceEntityRepository
         parent::__construct($registry, Membre::class);
     }
 
-//    /**
-//     * @return Membre[] Returns an array of Membre objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('m.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Nombre de membres par groupement.
+     *
+     * @return array<int, int> id du groupement => nombre de membres
+     */
+    public function compterParGroupement(): array
+    {
+        $lignes = $this->createQueryBuilder('m')
+            ->select('IDENTITY(m.groupement) AS groupementId, COUNT(m.id) AS total')
+            ->groupBy('m.groupement')
+            ->getQuery()
+            ->getArrayResult();
 
-//    public function findOneBySomeField($value): ?Membre
-//    {
-//        return $this->createQueryBuilder('m')
-//            ->andWhere('m.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        return array_column(array_map(fn ($l) => [(int) $l['groupementId'], (int) $l['total']], $lignes), 1, 0);
+    }
 }

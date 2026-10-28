@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Amende;
+use App\Entity\Seance;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,42 @@ class AmendeRepository extends ServiceEntityRepository
         parent::__construct($registry, Amende::class);
     }
 
-//    /**
-//     * @return Amende[] Returns an array of Amende objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * Total des amendes par seance.
+     *
+     * @param int[] $seanceIds
+     *
+     * @return array<int, int>
+     */
+    public function totauxParSeance(array $seanceIds): array
+    {
+        if ($seanceIds === []) {
+            return [];
+        }
 
-//    public function findOneBySomeField($value): ?Amende
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $lignes = $this->createQueryBuilder('a')
+            ->select('IDENTITY(a.seance) AS seanceId, SUM(a.montantAmende) AS total')
+            ->where('a.seance IN (:ids)')
+            ->setParameter('ids', $seanceIds)
+            ->groupBy('a.seance')
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_column(array_map(fn ($l) => [(int) $l['seanceId'], (int) $l['total']], $lignes), 1, 0);
+    }
+
+    /**
+     * @return Amende[]
+     */
+    public function findParSeance(Seance $seance): array
+    {
+        return $this->createQueryBuilder('a')
+            ->addSelect('m')
+            ->join('a.membre', 'm')
+            ->where('a.seance = :seance')
+            ->setParameter('seance', $seance)
+            ->orderBy('m.nomComplet', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

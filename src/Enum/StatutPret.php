@@ -8,4 +8,14 @@ enum StatutPret: string
     case ACCEPTE = 'accepte';
     case REFUSE = 'refuse';
     case REMBOURSE = 'rembourse';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::EN_ATTENTE => 'En attente',
+            self::ACCEPTE => 'Accepté',
+            self::REFUSE => 'Refusé',
+            self::REMBOURSE => 'Remboursé',
+        };
+    }
 }

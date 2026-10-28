@@ -1,3 +1,85 @@
-body {
-    background-color: skyblue;
+:root {
+    --fond: #faf7f2;
+    --surface: #ffffff;
+    --texte: #2b2420;
+    --texte-doux: #6f655d;
+    --bordure: #e8e0d6;
+    --primaire: #b4532a;
+    --primaire-fonce: #8e3f1f;
+    --vert: #2f7a4f;
+    --vert-fond: #e3f2e8;
+    --orange-fond: #fdf0e1;
+    --orange: #a65c00;
+    --rouge: #b42f2f;
+    --rouge-fond: #fbe6e6;
+    --gris-fond: #f0ece6;
+    --rayon: 10px;
 }
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--fond);
+    color: var(--texte);
+    line-height: 1.5;
+}
+
+a { color: var(--primaire); text-decoration: none; }
+a:hover { color: var(--primaire-fonce); text-decoration: underline; }
+
+.conteneur { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+/* En-tete */
+.entete { background: var(--surface); border-bottom: 1px solid var(--bordure); margin-bottom: 28px; }
+.entete__contenu { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; color: var(--texte); }
+.logo:hover { text-decoration: none; color: var(--texte); }
+.logo__pastille { background: var(--primaire); color: #fff; border-radius: 8px; padding: 4px 8px; font-size: .85rem; }
+.nav a { color: var(--texte-doux); font-weight: 500; }
+
+/* Titres */
+.titre-page { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 20px; }
+.titre-page h1 { margin: 0; font-size: 1.6rem; }
+.titre-page p { margin: 0; color: var(--texte-doux); }
+h2 { font-size: 1.15rem; margin: 32px 0 12px; }
+
+.fil-ariane { font-size: .9rem; color: var(--texte-doux); margin-bottom: 14px; }
+.fil-ariane a { color: var(--texte-doux); }
+.fil-ariane span { margin: 0 6px; }
+
+/* Cartes de chiffres */
+.chiffres { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 8px; }
+.chiffre { background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 14px 16px; }
+.chiffre__libelle { font-size: .82rem; color: var(--texte-doux); text-transform: uppercase; letter-spacing: .03em; }
+.chiffre__valeur { font-size: 1.35rem; font-weight: 700; margin-top: 2px; }
+.chiffre--accent { border-left: 4px solid var(--primaire); }
+
+/* Fiche d'informations */
+.fiche { background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 18px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 24px; }
+.fiche dt { font-size: .82rem; color: var(--texte-doux); }
+.fiche dd { margin: 0; font-weight: 600; }
+
+/* Tableaux */
+.tableau-conteneur { background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--bordure); white-space: nowrap; }
+th { background: var(--gris-fond); font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; color: var(--texte-doux); }
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #fdfbf8; }
+tfoot td { font-weight: 700; background: var(--gris-fond); }
+.nombre { text-align: right; font-variant-numeric: tabular-nums; }
+.doux { color: var(--texte-doux); }
+.vide { padding: 28px; text-align: center; color: var(--texte-doux); }
+
+/* Badges */
+.badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: .8rem; font-weight: 600; background: var(--gris-fond); color: var(--texte-doux); }
+.badge--vert { background: var(--vert-fond); color: var(--vert); }
+.badge--orange { background: var(--orange-fond); color: var(--orange); }
+.badge--rouge { background: var(--rouge-fond); color: var(--rouge); }
+
+.bouton { display: inline-block; padding: 6px 12px; border: 1px solid var(--bordure); border-radius: 8px; background: var(--surface); font-size: .88rem; font-weight: 600; }
+.bouton:hover { border-color: var(--primaire); text-decoration: none; }
+
+.pied { color: var(--texte-doux); font-size: .85rem; padding-top: 40px; padding-bottom: 30px; }

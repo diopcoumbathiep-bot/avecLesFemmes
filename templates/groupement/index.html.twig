@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Groupements{% endblock %}
+
+{% block body %}
+    <div class="titre-page">
+        <h1>Groupements</h1>
+        <p>{{ groupements|length }} groupement(s)</p>
+    </div>
+
+    <div class="tableau-conteneur">
+        <table>
+            <thead>
+                <tr>
+                    <th>Groupement</th>
+                    <th>Téléphone</th>
+                    <th>Adresse</th>
+                    <th class="nombre">Membres</th>
+                    <th>Exercice en cours</th>
+                    <th>Statut</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for groupement in groupements %}
+                    <tr>
+                        <td><a href="{{ path('app_groupement_show', {id: groupement.id}) }}"><strong>{{ groupement.nom }}</strong></a></td>
+                        <td>{{ groupement.tel }}</td>
+                        <td class="doux">{{ groupement.adresse }}</td>
+                        <td class="nombre">{{ groupement.nombreMembres }}</td>
+                        <td>
+                            {% if groupement.exerciceEnCours %}
+                                {{ groupement.exerciceEnCours.periode }}
+                                <span class="badge badge--vert">{{ groupement.exerciceEnCours.statut }}</span>
+                            {% else %}
+                                <span class="doux">Aucun exercice en cours</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge {{ groupement.actif ? 'badge--vert' : 'badge--rouge' }}">{{ groupement.statut }}</span></td>
+                        <td><a class="bouton" href="{{ path('app_groupement_show', {id: groupement.id}) }}">Voir</a></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="7" class="vide">Aucun groupement enregistré.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

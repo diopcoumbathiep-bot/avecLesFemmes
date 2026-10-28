@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Presence;
+use App\Entity\Seance;
+use App\Enum\StatutPresence;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +18,44 @@ class PresenceRepository extends ServiceEntityRepository
         parent::__construct($registry, Presence::class);
     }
 
-//    /**
-//     * @return Presence[] Returns an array of Presence objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Presence[]
+     */
+    public function findParSeance(Seance $seance): array
+    {
+        return $this->createQueryBuilder('p')
+            ->addSelect('m')
+            ->join('p.membre', 'm')
+            ->where('p.seance = :seance')
+            ->setParameter('seance', $seance)
+            ->orderBy('m.nomComplet', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Presence
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * Nombre de membres presentes par seance.
+     *
+     * @param int[] $seanceIds
+     *
+     * @return array<int, int>
+     */
+    public function compterPresentsParSeance(array $seanceIds): array
+    {
+        if ($seanceIds === []) {
+            return [];
+        }
+
+        $lignes = $this->createQueryBuilder('p')
+            ->select('IDENTITY(p.seance) AS seanceId, COUNT(p.id) AS total')
+            ->where('p.seance IN (:ids)')
+            ->andWhere('p.statut = :present')
+            ->setParameter('ids', $seanceIds)
+            ->setParameter('present', StatutPresence::PRESENT)
+            ->groupBy('p.seance')
+            ->getQuery()
+            ->getArrayResult();
+
+        return array_column(array_map(fn ($l) => [(int) $l['seanceId'], (int) $l['total']], $lignes), 1, 0);
+    }
 }
