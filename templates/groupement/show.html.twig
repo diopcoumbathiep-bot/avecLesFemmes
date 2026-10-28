@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+{% import '_macros.html.twig' as m %}
+
+{% set groupement = detail.groupement %}
+
+{% block title %}{{ groupement.nom }}{% endblock %}
+
+{% block fil_ariane %}
+    <div class="fil-ariane">
+        <a href="{{ path('app_groupement_index') }}">Groupements</a><span>›</span>{{ groupement.nom }}
+    </div>
+{% endblock %}
+
+{% block body %}
+    <div class="titre-page">
+        <h1>{{ groupement.nom }}</h1>
+        <span class="badge {{ groupement.actif ? 'badge--vert' : 'badge--rouge' }}">{{ groupement.statut }}</span>
+    </div>
+
+    <dl class="fiche">
+        <div><dt>Téléphone</dt><dd>{{ groupement.tel }}</dd></div>
+        <div><dt>Adresse</dt><dd>{{ groupement.adresse }}</dd></div>
+        <div><dt>Membres</dt><dd>{{ groupement.nombreMembres }}</dd></div>
+    </dl>
+
+    <h2>Exercice en cours</h2>
+    {% set exercice = groupement.exerciceEnCours %}
+    {% if exercice %}
+        <dl class="fiche">
+            <div><dt>Début</dt><dd>{{ exercice.debut }}</dd></div>
+            <div><dt>Fin</dt><dd>{{ exercice.fin }}</dd></div>
+            <div><dt>Date limite des prêts</dt><dd>{{ exercice.limitePrets }}</dd></div>
+            <div><dt>Date de rétribution</dt><dd>{{ exercice.retribution }}</dd></div>
+        </dl>
+    {% else %}
+        <p class="doux">Aucun exercice en cours pour ce groupement.</p>
+    {% endif %}
+
+    <h2>Campagnes de l'exercice en cours</h2>
+    <div class="tableau-conteneur">
+        <table>
+            <thead>
+                <tr>
+                    <th>Campagne</th>
+                    <th>Type</th>
+                    <th>Périodicité</th>
+                    <th class="nombre">Montant</th>
+                    <th>Début</th>
+                    <th>Fin</th>
+                    <th class="nombre">Membres</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for campagne in detail.campagnes %}
+                    <tr>
+                        <td><a href="{{ path('app_campagne_show', {id: campagne.id}) }}"><strong>{{ campagne.nom }}</strong></a></td>
+                        <td><span class="badge {{ campagne.type == 'Tontine' ? 'badge--orange' : 'badge--vert' }}">{{ campagne.type }}</span></td>
+                        <td>{{ campagne.periodicite }} · {{ campagne.jourRencontre }}</td>
+                        <td class="nombre">{{ m.fcfa(campagne.montant) }}</td>
+                        <td>{{ campagne.debut }}</td>
+                        <td>{{ campagne.fin }}</td>
+                        <td class="nombre">{{ campagne.nombreMembres }}</td>
+                        <td><a class="bouton" href="{{ path('app_campagne_show', {id: campagne.id}) }}">Voir</a></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="8" class="vide">Aucune campagne pour l'exercice en cours.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Historique des exercices</h2>
+    <div class="tableau-conteneur">
+        <table>
+            <thead>
+                <tr><th>Début</th><th>Fin</th><th>Limite des prêts</th><th>Rétribution</th><th>Statut</th></tr>
+            </thead>
+            <tbody>
+                {% for e in detail.exercices %}
+                    <tr>
+                        <td>{{ e.debut }}</td>
+                        <td>{{ e.fin }}</td>
+                        <td>{{ e.limitePrets }}</td>
+                        <td>{{ e.retribution }}</td>
+                        <td><span class="badge {{ e.enCours ? 'badge--vert' : '' }}">{{ e.statut }}</span></td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="vide">Aucun exercice.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
