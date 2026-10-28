@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Campagne;
+use App\Entity\Exercice;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,19 @@ class CampagneRepository extends ServiceEntityRepository
         parent::__construct($registry, Campagne::class);
     }
 
-//    /**
-//     * @return Campagne[] Returns an array of Campagne objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Campagne
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    /**
+     * @return Campagne[]
+     */
+    public function findParExercice(Exercice $exercice): array
+    {
+        return $this->createQueryBuilder('c')
+            ->addSelect('t')
+            ->join('c.typeCampagne', 't')
+            ->where('c.exercice = :exercice')
+            ->setParameter('exercice', $exercice)
+            ->orderBy('c.dateDebutCampagne', 'ASC')
+            ->addOrderBy('c.nomCampagne', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
