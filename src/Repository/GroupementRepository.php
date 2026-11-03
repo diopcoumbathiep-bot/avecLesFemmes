@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Groupement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,10 +18,36 @@ class GroupementRepository extends ServiceEntityRepository
     }
 
     /**
-     * @return Groupement[]
+     * Requete unique de la liste : filtre par telephone et/ou par ville, trie par nom,
+     * et ne ramene que les lignes de la page demandee.
+     * La ville est cherchee dans l'adresse, sans tenir compte des majuscules.
+     *
+     * @return Paginator<Groupement>
      */
-    public function findTousParNom(): array
+    public function rechercher(?string $telephone, ?string $ville, int $page, int $parPage): Paginator
     {
-        return $this->findBy([], ['nomGroupement' => 'ASC']);
+        $qb = $this->createQueryBuilder('g')
+            ->orderBy('g.nomGroupement', 'ASC');
+
+        if ($telephone !== null && $telephone !== '') {
+            $qb->andWhere('g.tel LIKE :telephone')
+                ->setParameter('telephone', '%' . $telephone . '%');
+        }
+
+        if ($ville !== null && $ville !== '') {
+            $qb->andWhere('LOWER(g.adresse) LIKE :ville')
+                ->setParameter('ville', '%' . mb_strtolower($ville) . '%');
+        }
+
+        $qb->setFirstResult(($page - 1) * $parPage)
+            ->setMaxResults($parPage);
+
+        return new Paginator($qb, false);
+    }
+
+    public function enregistrer(Groupement $groupement): void
+    {
+        $this->getEntityManager()->persist($groupement);
+        $this->getEntityManager()->flush();
     }
 }

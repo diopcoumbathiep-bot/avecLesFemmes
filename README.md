@@ -25,7 +25,17 @@ Application web Symfony de gestion de calebasses participatives (épargne et ton
 3. Créer la base : `composer diopcoumbathiep:db:create`
 4. Générer et exécuter la migration : `composer diopcoumbathiep:migration`
 5. Charger les données de démonstration : `composer diopcoumbathiep:fixtures`
-6. Lancer le serveur : `symfony serve`
+6. Lancer le serveur avec l'URL personnalisée (voir ci-dessous) : `symfony serve -d`, puis ouvrir `https://diopcoumbathiep.wip`
+
+### URL personnalisée (sans localhost)
+
+Le proxy local de la Symfony CLI donne un nom de domaine au projet :
+
+1. `symfony server:ca:install` (une seule fois : certificat pour le HTTPS local)
+2. `symfony proxy:domain:attach diopcoumbathiep` (associe `diopcoumbathiep.wip` au projet)
+3. `symfony proxy:start` (démarre le proxy, à laisser tourner)
+4. Configurer le navigateur ou Windows pour utiliser le proxy `127.0.0.1:7080` (ou le fichier PAC `http://127.0.0.1:7080/proxy.pac`)
+5. `symfony serve -d`, puis ouvrir `https://diopcoumbathiep.wip`
 
 ## Commandes personnalisées
 
@@ -65,8 +75,9 @@ Chaque page suit le chemin Contrôleur → Service → Repository → DTO :
 
 | URL | Contenu |
 |---|---|
-| `/groupements` | Liste des groupements avec leur exercice en cours |
-| `/groupements/{id}` | Détail d'un groupement : exercice en cours, campagnes, historique des exercices |
+| `/groupements` | Liste des groupements, filtrée (`?telephone=77&ville=Dakar`) et paginée (`&page=2`), 5 par page |
+| `/groupements/nouveau` | Formulaire de création d'un groupement (DTO d'entrée `GroupementFormDto`) |
+| `/groupements/{id}/modifier` | Formulaire de modification, pré-rempli à partir de l'entité |
 | `/campagnes/{id}` | Détail d'une campagne : règles de caisse, bilan, séances avec totaux, membres et mode de cotisation |
 | `/seances/{id}` | Détail d'une séance : présence et cotisation de chaque membre, amendes, totaux (épargne, caisse, amendes, caisse sociale) |
 

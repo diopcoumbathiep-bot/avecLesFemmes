@@ -83,3 +83,31 @@ tfoot td { font-weight: 700; background: var(--gris-fond); }
 .bouton:hover { border-color: var(--primaire); text-decoration: none; }
 
 .pied { color: var(--texte-doux); font-size: .85rem; padding-top: 40px; padding-bottom: 30px; }
+
+
+/* Barre d'outils et filtre */
+.barre-outils { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 16px; }
+.filtre form > div { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 14px; }
+.filtre label { display: block; font-size: .82rem; color: var(--texte-doux); margin-bottom: 4px; }
+
+/* Formulaires */
+input[type=text], select { padding: 8px 10px; border: 1px solid var(--bordure); border-radius: 8px; font: inherit; background: var(--surface); min-width: 200px; }
+button[type=submit] { padding: 8px 16px; border: none; border-radius: 8px; background: var(--primaire); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+button[type=submit]:hover { background: var(--primaire-fonce); }
+.formulaire { max-width: 520px; background: var(--surface); border: 1px solid var(--bordure); border-radius: var(--rayon); padding: 20px; }
+.formulaire form > div > div { margin-bottom: 14px; }
+.formulaire label { display: block; font-weight: 600; margin-bottom: 4px; }
+.formulaire input[type=text], .formulaire select { width: 100%; }
+.formulaire ul { color: var(--rouge); font-size: .85rem; padding-left: 18px; margin: 4px 0 0; }
+
+.bouton--plein { background: var(--primaire); color: #fff; border-color: var(--primaire); }
+.bouton--plein:hover { color: #fff; background: var(--primaire-fonce); }
+
+/* Pagination */
+.pagination { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+.pagination a, .pagination__courante { padding: 6px 12px; border: 1px solid var(--bordure); border-radius: 8px; background: var(--surface); }
+.pagination__courante { background: var(--primaire); border-color: var(--primaire); color: #fff; font-weight: 700; }
+.pagination__info { margin: 8px 0 0; font-size: .85rem; }
+
+/* Message de confirmation */
+.alerte { background: var(--vert-fond); color: var(--vert); border-radius: var(--rayon); padding: 10px 14px; margin-bottom: 16px; font-weight: 600; }
