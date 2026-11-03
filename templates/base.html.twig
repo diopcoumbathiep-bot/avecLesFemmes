@@ -25,6 +25,10 @@
         </header>
 
         <main class="conteneur">
+            {% for message in app.flashes('succes') %}
+                <div class="alerte">{{ message }}</div>
+            {% endfor %}
+
             {% block fil_ariane %}{% endblock %}
             {% block body %}{% endblock %}
         </main>

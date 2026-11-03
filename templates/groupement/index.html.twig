@@ -5,7 +5,21 @@
 {% block body %}
     <div class="titre-page">
         <h1>Groupements</h1>
-        <p>{{ groupements|length }} groupement(s)</p>
+        <p>{{ resultat.total }} groupement(s)</p>
+    </div>
+
+    <div class="barre-outils">
+        <div class="filtre">
+            {{ form_start(formFiltre) }}
+                {{ form_widget(formFiltre) }}
+            {{ form_end(formFiltre, {render_rest: false}) }}
+        </div>
+        <div>
+            {% if resultat.filtreActif %}
+                <a class="bouton" href="{{ path('app_groupement_index') }}">Réinitialiser</a>
+            {% endif %}
+            <a class="bouton bouton--plein" href="{{ path('app_groupement_nouveau') }}">+ Nouveau groupement</a>
+        </div>
     </div>
 
     <div class="tableau-conteneur">
@@ -22,7 +36,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for groupement in groupements %}
+                {% for groupement in resultat.groupements %}
                     <tr>
                         <td><a href="{{ path('app_groupement_show', {id: groupement.id}) }}"><strong>{{ groupement.nom }}</strong></a></td>
                         <td>{{ groupement.tel }}</td>
@@ -37,12 +51,40 @@
                             {% endif %}
                         </td>
                         <td><span class="badge {{ groupement.actif ? 'badge--vert' : 'badge--rouge' }}">{{ groupement.statut }}</span></td>
-                        <td><a class="bouton" href="{{ path('app_groupement_show', {id: groupement.id}) }}">Voir</a></td>
+                        <td>
+                            <a class="bouton" href="{{ path('app_groupement_show', {id: groupement.id}) }}">Voir</a>
+                            <a class="bouton" href="{{ path('app_groupement_modifier', {id: groupement.id}) }}">Modifier</a>
+                        </td>
                     </tr>
                 {% else %}
-                    <tr><td colspan="7" class="vide">Aucun groupement enregistré.</td></tr>
+                    <tr>
+                        <td colspan="7" class="vide">
+                            {{ resultat.filtreActif ? 'Aucun groupement ne correspond à ce filtre.' : 'Aucun groupement enregistré.' }}
+                        </td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+
+    {% if resultat.totalPages > 1 %}
+        <nav class="pagination">
+            {% if resultat.aPagePrecedente %}
+                <a href="{{ path('app_groupement_index', {telephone: resultat.telephone, ville: resultat.ville, page: resultat.page - 1}) }}">‹ Précédent</a>
+            {% endif %}
+
+            {% for p in 1..resultat.totalPages %}
+                {% if p == resultat.page %}
+                    <span class="pagination__courante">{{ p }}</span>
+                {% else %}
+                    <a href="{{ path('app_groupement_index', {telephone: resultat.telephone, ville: resultat.ville, page: p}) }}">{{ p }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if resultat.aPageSuivante %}
+                <a href="{{ path('app_groupement_index', {telephone: resultat.telephone, ville: resultat.ville, page: resultat.page + 1}) }}">Suivant ›</a>
+            {% endif %}
+        </nav>
+        <p class="doux pagination__info">Page {{ resultat.page }} sur {{ resultat.totalPages }}</p>
+    {% endif %}
 {% endblock %}
